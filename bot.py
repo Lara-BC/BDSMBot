@@ -148,8 +148,11 @@ async def quit(ctx):
 async def on_message(message):
     ctx = await bot.get_context(message)
 
-    # Only handle these things
+    # Only handle non commands
     if ctx.command: return
+
+    # Don't manipulate emotes
+    if message.content.startswith("_") and message.content.endswith("_"): return
 
     user = users.get_user(message.author)
 
