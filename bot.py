@@ -118,6 +118,11 @@ async def init(ctx):
     log.info(f"INIT: {ctx.author.id}")
 
 
+@bot.command()
+@is_me
+async def restart(ctx):
+    sys.exit()
+
 @bot.listen()
 async def on_message(message):
     ctx = await bot.get_context(message)
@@ -138,11 +143,14 @@ async def on_message(message):
 async def gag(ctx, *, member: discord.Member):
     log.info(f"GAG: {ctx.author.display_name} gags {member}")
 
+    gag = users.Gag.BALLGAG
+
+
     user = users.get_user(member)
-    user.gag()
+    user.bind(gag)
 
     message = (
-        f"{ctx.author.display_name} gags {member.display_name} with a large ballgag"
+        f"{ctx.author.display_name} gags {member.display_name} with a {gag.value}"
     )
     await ctx.send(message)
 
@@ -152,7 +160,7 @@ async def ungag(ctx, *, member: discord.Member):
     log.info(f"GAG: {ctx.author.display_name} ungags {member}")
 
     user = users.get_user(member)
-    user.ungag()
+    user.unbind(users.BodyPart.MOUTH)
 
     message = f"{ctx.author.display_name} removes the gag from {member.display_name}"
     await ctx.send(message)
