@@ -2,6 +2,7 @@
 
 import discord
 from discord.ext import commands
+from discord.ext.commands.errors import CheckFailure, CommandError
 import users
 import os
 import sys
@@ -52,6 +53,14 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="!", description=description, intents=intents)
 
+# Error catch
+@bot.on_error
+async def info_error(ctx, error: CommandError):
+    # These should already be handled
+    if isinstance(error, CheckFailure): return
+
+    await ctx.send('Sorry, I was unable to perform that action')
+    await bot.on_command_error(ctx, error)
 
 @commands.check
 def is_me(ctx):
@@ -59,7 +68,11 @@ def is_me(ctx):
 
 @commands.check
 def require_interact(ctx):
-    return users.get_user(ctx.message.author).can_interact
+    can_interact = users.get_user(ctx.message.author).can_interact
+    if not can_interact:
+        ctx.send("You can't do that with your arms bound!")
+
+    return can_interact
 
 @bot.event
 async def on_ready():
