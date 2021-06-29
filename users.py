@@ -24,7 +24,10 @@ class User:
         return self.restraints.mouth is not None
 
     def bind(self, restraint: RESTRAINT):
-        pass
+        if isinstance(restraint, Gag):
+            self.restraints.mouth = restraint
+        elif isinstance(restraint, ArmRestraint):
+            self.restraints.arms = restraint
 
     def unbind(self, bodypart: BodyPart):
         setattr(self.restraints, bodypart.value, None)
