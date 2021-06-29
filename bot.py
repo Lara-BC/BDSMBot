@@ -121,7 +121,7 @@ async def init(ctx):
 @bot.command()
 @is_me
 async def restart(ctx):
-    sys.exit()
+    sys.exit(11)
 
 @bot.listen()
 async def on_message(message):
