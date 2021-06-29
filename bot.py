@@ -123,6 +123,11 @@ async def init(ctx):
 async def restart(ctx):
     sys.exit(11)
 
+@bot.command()
+@is_me
+async def quit(ctx):
+    sys.exit(0)
+
 @bot.listen()
 async def on_message(message):
     ctx = await bot.get_context(message)
