@@ -67,10 +67,10 @@ def is_me(ctx):
     return ctx.message.author.id == 597562323481395208
 
 @commands.check
-def require_interact(ctx):
+async def require_interact(ctx):
     can_interact = users.get_user(ctx.message.author).can_interact
     if not can_interact:
-        ctx.send("You can't do that with your arms bound!")
+        await ctx.send("You can't do that with your arms bound!")
 
     return can_interact
 
