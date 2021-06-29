@@ -23,6 +23,10 @@ class User:
     def is_gagged(self):
         return self.restraints.mouth is not None
 
+    @property
+    def can_interact(self):
+        return self.restraints.arms is None
+
     def bind(self, restraint: RESTRAINT):
         if isinstance(restraint, Gag):
             self.restraints.mouth = restraint

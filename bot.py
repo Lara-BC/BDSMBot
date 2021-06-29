@@ -57,6 +57,9 @@ bot = commands.Bot(command_prefix="!", description=description, intents=intents)
 def is_me(ctx):
     return ctx.message.author.id == 597562323481395208
 
+@commands.check
+def require_interact(ctx):
+    return users.get_user(ctx.message.author).can_interact
 
 @bot.event
 async def on_ready():
@@ -145,6 +148,7 @@ async def on_message(message):
 
 
 @bot.command()
+@require_interact
 async def gag(ctx, *, member: discord.Member):
     log.info(f"GAG: {ctx.author.display_name} gags {member}")
 
@@ -159,8 +163,8 @@ async def gag(ctx, *, member: discord.Member):
     )
     await ctx.send(message)
 
-
 @bot.command()
+@require_interact
 async def ungag(ctx, *, member: discord.Member):
     log.info(f"GAG: {ctx.author.display_name} ungags {member}")
 
@@ -169,6 +173,39 @@ async def ungag(ctx, *, member: discord.Member):
 
     message = f"{ctx.author.display_name} removes the gag from {member.display_name}"
     await ctx.send(message)
+
+
+@bot.command()
+@require_interact
+async def bind(ctx, *, member: discord.Member):
+    log.info(f"BIND: {ctx.author.display_name} binds {member}")
+
+    restraints = users.ArmRestraint.CUFFS
+
+
+    user = users.get_user(member)
+    user.bind(restraints)
+
+    message = (
+        f"{ctx.author.display_name} binds {member.display_name} with {restraints.value}"
+    )
+    await ctx.send(message)
+
+@bot.command()
+@require_interact
+# TODO: Handle more than just arms
+async def unbind(ctx, *, member: discord.Member):
+    log.info(f"BIND: {ctx.author.display_name} unbinds {member}'s arms")
+
+
+    user = users.get_user(member)
+    user.unbind(users.BodyPart.ARMS)
+
+    message = (
+        f"{ctx.author.display_name} unbinds {member.display_name}'s arms"
+    )
+    await ctx.send(message)
+
 
 
 bot.run(os.getenv("TOKEN"))
